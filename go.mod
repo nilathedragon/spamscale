@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/Ostsol/gradient v0.0.0-20130528175357-ba63a5050e92 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
