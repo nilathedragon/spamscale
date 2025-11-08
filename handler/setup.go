@@ -40,7 +40,7 @@ func SetupHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 		for _, admin := range admins {
 			adminUser := admin.MergeChatMember()
 			if adminUser.User.Id == ctx.MyChatMember.NewChatMember.GetUser().Id {
-				if adminUser.CanDeleteMessages && adminUser.CanRestrictMembers {
+				if adminUser.CanDeleteMessages && adminUser.CanRestrictMembers && adminUser.CanInviteUsers {
 					_, err = b.SendMessage(ctx.MyChatMember.Chat.Id, permissionOkMessage, &gotgbot.SendMessageOpts{})
 					if err != nil {
 						return err
