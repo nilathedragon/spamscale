@@ -29,7 +29,7 @@ to quickly create a Cobra application.`,
 		viper.SetConfigName("spamscale")
 		viper.AutomaticEnv()
 		viper.SetEnvPrefix("SPAMSCALE")
-		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 		if err := viper.ReadInConfig(); err != nil {
 			return err
 		}
