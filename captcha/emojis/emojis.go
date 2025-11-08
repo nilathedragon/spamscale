@@ -8,7 +8,7 @@ import (
 func loadEmojis() (emojis []string, err error) {
 	emojis = make([]string, 0)
 
-	files, err := os.ReadDir("./emojis")
+	files, err := os.ReadDir("./imgs")
 	if err != nil {
 		return nil, err
 	}

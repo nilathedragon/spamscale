@@ -30,7 +30,7 @@ func GenerateCaptchaImage() (chosenEmojis []string, img *image.RGBA, err error) 
 
 		emoji := emojis[randomIndex]
 
-		err := addImage(img, image.Point{X: xOffset, Y: 200}, "./emojis/"+emoji+".png")
+		err := addImage(img, image.Point{X: xOffset, Y: 200}, "./imgs/"+emoji+".png")
 		if err != nil {
 			return nil, nil, err
 		}
