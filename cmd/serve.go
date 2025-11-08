@@ -46,6 +46,8 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
+		dispatcher.AddHandler(handlers.NewCommand("setcaptchatype", handler.CommandSetCaptchaTypeHandler))
+		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
 
 		err = updater.StartPolling(bot, &ext.PollingOpts{
 			DropPendingUpdates: false,
