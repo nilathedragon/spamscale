@@ -38,6 +38,12 @@ func JoinRequestHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 			return err
 		}
 		return nil
+	case model.CaptchaTypeEmoji:
+		err := captcha.EmojiCaptcha(b, ctx.ChatJoinRequest.UserChatId, ctx.ChatJoinRequest.Chat.Id, ctx.ChatJoinRequest.From.Id)
+		if err != nil {
+			return err
+		}
+		return nil
 	default:
 		return errors.New("unknown captcha type")
 	}

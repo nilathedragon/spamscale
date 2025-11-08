@@ -44,6 +44,7 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewMyChatMember(handler.SetupHandlerFilter, handler.SetupHandler))
 		dispatcher.AddHandler(handlers.NewChatJoinRequest(handler.JoinRequestHandlerFilter, handler.JoinRequestHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
+		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
 
 		err = updater.StartPolling(bot, &ext.PollingOpts{

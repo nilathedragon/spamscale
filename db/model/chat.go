@@ -15,6 +15,7 @@ type CaptchaType string
 const (
 	CaptchaTypeNone   CaptchaType = "none"
 	CaptchaTypeButton CaptchaType = "button"
+	CaptchaTypeEmoji  CaptchaType = "emoji"
 	CaptchaTypeManual CaptchaType = "manual"
 )
 
