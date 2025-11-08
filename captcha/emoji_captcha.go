@@ -234,7 +234,10 @@ func EmojiCaptchaCallback(b *gotgbot.Bot, ctx *ext.Context) error {
 				_, _ = message.Delete(b, &gotgbot.DeleteMessageOpts{})
 			})
 
-			db.Delete(captchaState)
+			err = RejectUser(b, &captchaState)
+			if err != nil {
+				return err
+			}
 
 			return nil
 		}
