@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o spamscale .
+RUN CGO_ENABLED=1 GOOS=linux go build --ldflags '-linkmode external -extldflags=-static' -o spamscale .
 
 FROM gcr.io/distroless/static-debian12
 
