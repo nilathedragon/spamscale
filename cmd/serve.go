@@ -1,0 +1,71 @@
+package cmd
+
+import (
+	"errors"
+	"time"
+
+	"github.com/PaulSonOfLars/gotgbot/v2"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext/handlers/filters/callbackquery"
+	"github.com/go-mojito/mojito/log"
+	"github.com/nilathedragon/spamscale/captcha"
+	"github.com/nilathedragon/spamscale/handler"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Start the SpamScale telegram bot",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		log.Info("Starting SpamScale telegram bot...")
+
+		botToken := viper.GetString("bot-token")
+		if !viper.IsSet("bot-token") || botToken == "" {
+			return errors.New("bot-token is not set")
+		}
+
+		bot, err := gotgbot.NewBot(botToken, nil)
+		if err != nil {
+			return err
+		}
+
+		dispatcher := ext.NewDispatcher(&ext.DispatcherOpts{
+			// If an error is returned by a handler, log it and continue going.
+			Error: func(b *gotgbot.Bot, ctx *ext.Context, err error) ext.DispatcherAction {
+				log.Error("an error occurred while handling update", "error", err.Error())
+				return ext.DispatcherActionNoop
+			},
+			MaxRoutines: ext.DefaultMaxRoutines,
+		})
+		updater := ext.NewUpdater(dispatcher, &ext.UpdaterOpts{})
+
+		dispatcher.AddHandler(handlers.NewMyChatMember(handler.SetupHandlerFilter, handler.SetupHandler))
+		dispatcher.AddHandler(handlers.NewChatJoinRequest(handler.JoinRequestHandlerFilter, handler.JoinRequestHandler))
+		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
+		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
+
+		err = updater.StartPolling(bot, &ext.PollingOpts{
+			DropPendingUpdates: false,
+			GetUpdatesOpts: &gotgbot.GetUpdatesOpts{
+				Timeout: 10,
+				RequestOpts: &gotgbot.RequestOpts{
+					Timeout: time.Second * 11,
+				},
+			},
+		})
+		if err != nil {
+			return err
+		}
+
+		log.Info("SpamScale telegram bot started, press Ctrl+C to stop")
+		updater.Idle()
+
+		return nil
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(serveCmd)
+}
