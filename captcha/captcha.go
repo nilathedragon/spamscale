@@ -1,12 +1,33 @@
 package captcha
 
 import (
+	"errors"
+
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/go-mojito/mojito/log"
 	"github.com/infinytum/injector"
+	"github.com/nilathedragon/spamscale/db"
 	"github.com/nilathedragon/spamscale/db/model"
 	"gorm.io/gorm"
 )
+
+func TriggerCaptcha(b *gotgbot.Bot, captchaChatID int64, chatID int64, userID int64) error {
+	captchaType, err := db.Chat.GetCaptchaType(chatID)
+	if err != nil {
+		return err
+	}
+
+	switch captchaType {
+	case model.CaptchaTypeNone:
+		return NoneCaptcha(b, captchaChatID, chatID, userID)
+	case model.CaptchaTypeButton:
+		return ButtonCaptcha(b, captchaChatID, chatID, userID)
+	case model.CaptchaTypeEmoji:
+		return EmojiCaptcha(b, captchaChatID, chatID, userID)
+	default:
+		return errors.New("unknown captcha type")
+	}
+}
 
 func ApproveUser(b *gotgbot.Bot, captchaState *model.CaptchaState) error {
 	db, err := injector.Inject[*gorm.DB]()

@@ -10,6 +10,8 @@ const (
 	CaptchaFailActionMute CaptchaFailAction = "mute"
 )
 
+var CaptchaFailActions = []CaptchaFailAction{CaptchaFailActionBan, CaptchaFailActionKick, CaptchaFailActionMute}
+
 type CaptchaType string
 
 const (
@@ -18,6 +20,8 @@ const (
 	CaptchaTypeEmoji  CaptchaType = "emoji"
 	CaptchaTypeManual CaptchaType = "manual"
 )
+
+var CaptchaTypes = []CaptchaType{CaptchaTypeNone, CaptchaTypeButton, CaptchaTypeEmoji, CaptchaTypeManual}
 
 // Represents a Telegram chat
 type Chat struct {

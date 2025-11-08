@@ -11,9 +11,5 @@ func CommandCaptchaHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	err := captcha.ButtonCaptcha(b, ctx.EffectiveChat.Id, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return captcha.TriggerCaptcha(b, ctx.EffectiveChat.Id, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id)
 }
