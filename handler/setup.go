@@ -10,6 +10,7 @@ import (
 
 const (
 	permissionMessage = `Thank you for using Spam Scale in your chat! In order to use the bot, you need to grant me the following admin permissions:
+- Invite users
 - Delete messages
 - Ban users
 `
