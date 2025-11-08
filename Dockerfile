@@ -11,8 +11,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o spamscale .
 
 FROM gcr.io/distroless/static-debian12
 
-RUN mkdir -p /data
-WORKDIR /data
+WORKDIR /mnt
 
 COPY --from=builder /app/spamscale /spamscale
 
