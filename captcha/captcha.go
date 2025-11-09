@@ -24,6 +24,8 @@ func TriggerCaptcha(b *gotgbot.Bot, captchaChatID int64, chatID int64, userID in
 		return ButtonCaptcha(b, captchaChatID, chatID, userID)
 	case model.CaptchaTypeEmoji:
 		return EmojiCaptcha(b, captchaChatID, chatID, userID)
+	case model.CaptchaTypeManual:
+		return nil // Manual captcha means the admins will manually process join requests
 	default:
 		return errors.New("unknown captcha type")
 	}
