@@ -30,6 +30,9 @@ to quickly create a Cobra application.`,
 		viper.AutomaticEnv()
 		viper.SetEnvPrefix("SPAMSCALE")
 		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+
+		viper.SetDefault("cache.duration", 10) // 10 minutes
+
 		viper.SafeWriteConfig()
 		if err := viper.ReadInConfig(); err != nil {
 			return err
