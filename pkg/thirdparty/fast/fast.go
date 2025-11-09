@@ -2,6 +2,7 @@ package fast
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"slices"
 	"strconv"
@@ -45,6 +46,10 @@ func fetchBlocklist() ([]string, error) {
 		return nil, err
 	}
 	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", response.StatusCode)
+	}
 
 	var blocklist []string
 	if err := json.NewDecoder(response.Body).Decode(&blocklist); err != nil {
