@@ -5,6 +5,7 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
+	"github.com/go-mojito/mojito/log"
 	"github.com/nilathedragon/spamscale/db"
 	"github.com/nilathedragon/spamscale/db/model"
 	"github.com/nilathedragon/spamscale/util"
@@ -15,6 +16,7 @@ const (
 )
 
 func CommandSetCaptchaTypeHandler(b *gotgbot.Bot, ctx *ext.Context) error {
+	log.Info("Set captcha type command received", "chat_id", ctx.EffectiveChat.Id, "user_id", ctx.EffectiveUser.Id)
 	if _, err := b.DeleteMessage(ctx.EffectiveChat.Id, ctx.EffectiveMessage.MessageId, &gotgbot.DeleteMessageOpts{}); err != nil {
 		return err
 	}
