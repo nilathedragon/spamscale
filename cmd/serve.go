@@ -50,6 +50,28 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCommand("setcaptchatype", handler.CommandSetCaptchaTypeHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
 
+		userCommandScope := []gotgbot.BotCommand{
+			{
+				Command:     "report",
+				Description: "Notify the moderators",
+			},
+		}
+
+		bot.SetMyCommands(userCommandScope, &gotgbot.SetMyCommandsOpts{
+			Scope: gotgbot.BotCommandScopeDefault{},
+		})
+
+		adminCommandScope := []gotgbot.BotCommand{
+			{
+				Command:     "setcaptchatype",
+				Description: "Set the type of captcha to use",
+			},
+		}
+
+		bot.SetMyCommands(append(userCommandScope, adminCommandScope...), &gotgbot.SetMyCommandsOpts{
+			Scope: gotgbot.BotCommandScopeAllChatAdministrators{},
+		})
+
 		err = updater.StartPolling(bot, &ext.PollingOpts{
 			DropPendingUpdates: false,
 			GetUpdatesOpts: &gotgbot.GetUpdatesOpts{
