@@ -58,9 +58,14 @@ var serveCmd = &cobra.Command{
 			},
 		}
 
-		bot.SetMyCommands(userCommandScope, &gotgbot.SetMyCommandsOpts{
-			Scope: gotgbot.BotCommandScopeDefault{},
-		})
+		if _, err := bot.SetMyCommands(
+			userCommandScope,
+			&gotgbot.SetMyCommandsOpts{
+				Scope: gotgbot.BotCommandScopeDefault{},
+			},
+		); err != nil {
+			return err
+		}
 
 		adminCommandScope := []gotgbot.BotCommand{
 			{
@@ -68,14 +73,19 @@ var serveCmd = &cobra.Command{
 				Description: "Set the type of captcha to use",
 			},
 			{
-				Command: 	 "tmute",
-				Description: "Temporarily mute a user",
+				Command:     "tmute",
+				Description: "Temporarily mute a user. Usage: /tmute <@username> <duration>",
 			},
 		}
 
-		bot.SetMyCommands(append(userCommandScope, adminCommandScope...), &gotgbot.SetMyCommandsOpts{
-			Scope: gotgbot.BotCommandScopeAllChatAdministrators{},
-		})
+		if _, err := bot.SetMyCommands(
+			append(userCommandScope, adminCommandScope...),
+			&gotgbot.SetMyCommandsOpts{
+				Scope: gotgbot.BotCommandScopeAllChatAdministrators{},
+			},
+		); err != nil {
+			return err
+		}
 
 		err = updater.StartPolling(bot, &ext.PollingOpts{
 			DropPendingUpdates: false,
