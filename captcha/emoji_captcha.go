@@ -196,8 +196,6 @@ func EmojiCaptchaCallback(b *gotgbot.Bot, ctx *ext.Context) error {
 		})
 
 		if len(currentState.PickedCorrectEmojis) == len(validationPayload.ValidEmojis) {
-			_, err = ctx.CallbackQuery.Message.Delete(b, &gotgbot.DeleteMessageOpts{})
-
 			_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{
 				Text:      "Thank you for your confirmation! Your account has been approved.",
 				ShowAlert: false,
@@ -220,11 +218,6 @@ func EmojiCaptchaCallback(b *gotgbot.Bot, ctx *ext.Context) error {
 		db.Save(captchaState)
 
 		if currentState.Errors >= errorsBeforeCancelValidation {
-			_, err := ctx.CallbackQuery.Message.Delete(b, &gotgbot.DeleteMessageOpts{})
-			if err != nil {
-				return err
-			}
-
 			message, err := b.SendMessage(chatId, "Sorry, but you failed the captcha. This message wil delete in 10 seconds.", &gotgbot.SendMessageOpts{})
 			if err != nil {
 				return err

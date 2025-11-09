@@ -11,6 +11,7 @@ import (
 	"github.com/go-mojito/mojito/log"
 	"github.com/nilathedragon/spamscale/captcha"
 	"github.com/nilathedragon/spamscale/handler"
+	"github.com/nilathedragon/spamscale/sidecar"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -104,6 +105,8 @@ var serveCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+
+		go sidecar.ExpireCaptchas(bot)
 
 		log.Info("SpamScale telegram bot started, press Ctrl+C to stop")
 		updater.Idle()

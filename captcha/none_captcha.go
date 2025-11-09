@@ -5,28 +5,22 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/go-mojito/mojito/log"
-	"github.com/infinytum/injector"
+	"github.com/nilathedragon/spamscale/db"
 	"github.com/nilathedragon/spamscale/db/model"
-	"gorm.io/gorm"
 )
 
 func NoneCaptcha(b *gotgbot.Bot, captchaChatId int64, chatID int64, userID int64) error {
 	log.Info("No captcha was enabled, approving user to join the chat.")
 
-	db, err := injector.Inject[*gorm.DB]()
-	if err != nil {
-		return err
-	}
-
 	captchaState := &model.CaptchaState{
-		CaptchaMessageId: 0,
+		CaptchaMessageId: -1,
 		CaptchaChatId:    captchaChatId,
 		ChatID:           chatID,
 		UserID:           userID,
 		ExpiresAt:        time.Now().Add(time.Minute * 10),
 	}
 
-	if err := db.Create(captchaState).Error; err != nil {
+	if err := db.CaptchaState.Save(captchaState); err != nil {
 		return err
 	}
 
