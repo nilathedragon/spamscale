@@ -70,7 +70,7 @@ func CommandTMuteHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	if err := mute.TemporaryMute(b, ctx.EffectiveChat.Id, userToMute.Id, command[2], ctx); err != nil {
+	if err := mute.TemporaryMute(b, userToMute.Id, command[2], ctx); err != nil {
 		return err
 	}
 	helperMessage, err := ctx.Message.Reply(b, "User muted for "+command[2], &gotgbot.SendMessageOpts{})

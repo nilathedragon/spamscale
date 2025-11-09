@@ -11,7 +11,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 )
 
-func TemporaryMute(b *gotgbot.Bot, chatId, userId int64, duration string, ctx *ext.Context) error {
+func TemporaryMute(b *gotgbot.Bot, userId int64, duration string, ctx *ext.Context) error {
 	regex, err := regexp.Compile(`(\d*)(min|h|d|m|y)`)
 	if err != nil {
 		return err
