@@ -8,18 +8,8 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/nilathedragon/spamscale/helpers"
-	"github.com/nilathedragon/spamscale/restriction/mute"
+	"github.com/nilathedragon/spamscale/restrictions"
 )
-
-type TgUserData struct {
-	ID         int64  `json:"id,string"`
-	Type       string `json:"type"`
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	Username   string `json:"username"`
-	IsBot      bool   `json:"isBot"`
-	IsVerified bool   `json:"isVerified"`
-}
 
 func CommandTMuteHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	if matches, err := regexp.Match(`/(\S*) (@[a-zA-Z0-9_-]*) (\d*(?:min|h|d|m|y))`, []byte(ctx.Message.Text)); err != nil {
@@ -70,7 +60,7 @@ func CommandTMuteHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	if err := mute.TemporaryMute(b, userToMute.Id, command[2], ctx); err != nil {
+	if err := restrictions.TemporaryMute(b, userToMute.Id, command[2], ctx); err != nil {
 		return err
 	}
 	helperMessage, err := ctx.Message.Reply(b, "User muted for "+command[2], &gotgbot.SendMessageOpts{})

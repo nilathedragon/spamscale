@@ -1,4 +1,4 @@
-package mute
+package restrictions
 
 import (
 	"errors"
@@ -73,15 +73,7 @@ func TemporaryMute(b *gotgbot.Bot, userId int64, duration string, ctx *ext.Conte
 			UntilDate: expiration.Unix(),
 		},
 	); err != nil {
-		return err
-	}
-
-	if _, err := ctx.Message.Chat.BanMember(b, userId, &gotgbot.BanChatMemberOpts{
-		UntilDate:      0,
-		RevokeMessages: false,
-		RequestOpts:    nil,
-	}); err != nil {
-		helperMessage, err := ctx.Message.Reply(b, "Failed to ban user", &gotgbot.SendMessageOpts{})
+		helperMessage, err := ctx.Message.Reply(b, "Failed to mute user", &gotgbot.SendMessageOpts{})
 		if err != nil {
 			return err
 		}
