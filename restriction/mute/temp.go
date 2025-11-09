@@ -1,7 +1,6 @@
 package mute
 
 import (
-	"database/sql"
 	"errors"
 	"regexp"
 	"slices"
@@ -10,17 +9,9 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/infinytum/injector"
-	"github.com/nilathedragon/spamscale/db/model"
-	"gorm.io/gorm"
 )
 
 func TemporaryMute(b *gotgbot.Bot, chatId, userId int64, duration string, ctx *ext.Context) error {
-	db, err := injector.Inject[*gorm.DB]()
-	if err != nil {
-		return err
-	}
-
 	regex, err := regexp.Compile(`(\d*)(min|h|d|m|y)`)
 	if err != nil {
 		return err
@@ -85,15 +76,21 @@ func TemporaryMute(b *gotgbot.Bot, chatId, userId int64, duration string, ctx *e
 		return err
 	}
 
-	if err := db.Save(&model.ChatRestriction{
-		ChatID:          chatId,
-		UserID:          userId,
-		RestrictionType: model.ChatRestrictionTypeMute,
-		ExpiresAt: sql.NullInt64{
-			Int64: expiration.Unix(),
-			Valid: true,
-		},
-	}).Error; err != nil {
+	if _, err := ctx.Message.Chat.BanMember(b, userId, &gotgbot.BanChatMemberOpts{
+		UntilDate:      0,
+		RevokeMessages: false,
+		RequestOpts:    nil,
+	}); err != nil {
+		helperMessage, err := ctx.Message.Reply(b, "Failed to ban user", &gotgbot.SendMessageOpts{})
+		if err != nil {
+			return err
+		}
+
+		time.AfterFunc(10*time.Second, func() {
+			_, _ = ctx.Message.Delete(b, &gotgbot.DeleteMessageOpts{})
+			_, _ = helperMessage.Delete(b, &gotgbot.DeleteMessageOpts{})
+		})
+
 		return err
 	}
 
