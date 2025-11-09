@@ -2,7 +2,9 @@ package mute
 
 import (
 	"database/sql"
+	"errors"
 	"regexp"
+	"slices"
 	"strconv"
 	"time"
 
@@ -49,6 +51,28 @@ func TemporaryMute(b *gotgbot.Bot, chatId, userId int64, duration string, ctx *e
 	}
 
 	expiration := time.Now().Add(deltaTime)
+
+	member, err := ctx.Message.Chat.GetMember(b, userId, nil)
+	if err != nil {
+		return err
+	}
+
+	admins, err := ctx.Message.Chat.GetAdministrators(b, nil)
+	if err != nil {
+		return err
+	}
+
+	if slices.Contains(admins, member) {
+		helperMessage, err := ctx.Message.Reply(b, "You can't mute an adminstrator", &gotgbot.SendMessageOpts{})
+		if err != nil {
+			return err
+		}
+		time.AfterFunc(10*time.Second, func() {
+			_, _ = ctx.Message.Delete(b, &gotgbot.DeleteMessageOpts{})
+			_, _ = helperMessage.Delete(b, &gotgbot.DeleteMessageOpts{})
+		})
+		return errors.New("user is adminstrator, skipping")
+	}
 
 	if _, err := ctx.Message.Chat.RestrictMember(
 		b,
