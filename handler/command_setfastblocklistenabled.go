@@ -19,33 +19,19 @@ func CommandSetFastBlocklistEnabledHandler(b *gotgbot.Bot, ctx *ext.Context) err
 	}
 
 	if !util.IsAdmin(b, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id) {
-		_, err := b.SendMessage(ctx.EffectiveChat.Id, "You are not authorized to use this command", &gotgbot.SendMessageOpts{})
-		if err != nil {
-			return err
-		}
-		return nil
+		return util.TempMessage(b, ctx.EffectiveChat.Id, "You are not authorized to use this command")
 	}
 
-	keyboard := util.GenerateKeyboard([]string{"Yes", "No"}, CommandSetFastBlocklistEnabledCallback, 2)
-	_, err := b.SendMessage(ctx.EffectiveChat.Id, "Please select whether to enable the fast blocklist", &gotgbot.SendMessageOpts{
+	return util.DropMessage(b.SendMessage(ctx.EffectiveChat.Id, "Please select whether to enable the fast blocklist", &gotgbot.SendMessageOpts{
 		ReplyMarkup: gotgbot.InlineKeyboardMarkup{
-			InlineKeyboard: keyboard,
+			InlineKeyboard: util.GenerateKeyboard([]string{"Yes", "No"}, CommandSetFastBlocklistEnabledCallback, 2),
 		},
-	})
-	if err != nil {
-		return err
-	}
-
-	return nil
+	}))
 }
 
 func CommandSetFastBlocklistEnabledHandlerCallback(b *gotgbot.Bot, ctx *ext.Context) error {
 	if !util.IsAdmin(b, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id) {
-		_, err := b.SendMessage(ctx.EffectiveChat.Id, "You are not authorized to use this command", &gotgbot.SendMessageOpts{})
-		if err != nil {
-			return err
-		}
-		return nil
+		return util.TempMessage(b, ctx.EffectiveChat.Id, "You are not authorized to use this command")
 	}
 
 	if _, err := b.DeleteMessage(ctx.EffectiveChat.Id, ctx.EffectiveMessage.MessageId, &gotgbot.DeleteMessageOpts{}); err != nil {
@@ -56,8 +42,6 @@ func CommandSetFastBlocklistEnabledHandlerCallback(b *gotgbot.Bot, ctx *ext.Cont
 	if err := db.Chat.SetFastBlocklistEnabled(ctx.EffectiveChat.Id, fastBlocklistEnabled == "Yes"); err != nil {
 		return err
 	}
-	if _, err := b.SendMessage(ctx.EffectiveChat.Id, "Fast blocklist enabled updated successfully", &gotgbot.SendMessageOpts{}); err != nil {
-		return err
-	}
-	return nil
+
+	return util.TempMessage(b, ctx.EffectiveChat.Id, "Fast blocklist setting updated successfully")
 }
