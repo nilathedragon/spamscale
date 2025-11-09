@@ -42,6 +42,14 @@ func CommandSetCaptchaTypeHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 }
 
 func CommandSetCaptchaTypeHandlerCallback(b *gotgbot.Bot, ctx *ext.Context) error {
+	if !util.IsAdmin(b, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id) {
+		_, err := b.SendMessage(ctx.EffectiveChat.Id, "You are not authorized to use this command", &gotgbot.SendMessageOpts{})
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	if _, err := b.DeleteMessage(ctx.EffectiveChat.Id, ctx.EffectiveMessage.MessageId, &gotgbot.DeleteMessageOpts{}); err != nil {
 		return err
 	}
@@ -64,6 +72,7 @@ func CommandSetCaptchaTypeHandlerCallback(b *gotgbot.Bot, ctx *ext.Context) erro
 	if err := db.Where(&model.Chat{ID: ctx.EffectiveChat.Id}).First(&chat).Error; err != nil {
 		return err
 	}
+
 	chat.CaptchaType = model.CaptchaType(captchaType)
 	if err := db.Save(&chat).Error; err != nil {
 		return err
