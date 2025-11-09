@@ -8,10 +8,12 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/go-mojito/mojito"
+	"github.com/go-mojito/mojito/log"
 	"github.com/nilathedragon/spamscale/util"
 )
 
 func CommandReportHandler(b *gotgbot.Bot, ctx *ext.Context) error {
+	log.Info("Report command received", "chat_id", ctx.EffectiveChat.Id, "user_id", ctx.EffectiveUser.Id)
 	// We always want to delete the message, no matter if it triggers a mod ping or not
 	if _, err := b.DeleteMessage(ctx.EffectiveChat.Id, ctx.EffectiveMessage.MessageId, &gotgbot.DeleteMessageOpts{}); err != nil {
 		return err
