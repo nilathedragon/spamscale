@@ -3,9 +3,7 @@ package handler
 import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/infinytum/injector"
-	"github.com/nilathedragon/spamscale/db/model"
-	"gorm.io/gorm"
+	"github.com/nilathedragon/spamscale/db"
 )
 
 const (
@@ -22,11 +20,7 @@ func SetupHandlerFilter(u *gotgbot.ChatMemberUpdated) bool {
 }
 
 func SetupHandler(b *gotgbot.Bot, ctx *ext.Context) error {
-	db, err := injector.Inject[*gorm.DB]()
-	if err != nil {
-		return err
-	}
-	if err := db.Where(&model.Chat{ID: ctx.MyChatMember.Chat.Id}).FirstOrCreate(&model.Chat{}).Error; err != nil {
+	if _, err := db.Chat.GetOrCreate(ctx.MyChatMember.Chat.Id); err != nil {
 		return err
 	}
 

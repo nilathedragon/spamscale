@@ -1,12 +1,15 @@
 package db
 
 import (
+	"github.com/go-mojito/mojito"
+	"github.com/go-mojito/mojito/pkg/cache"
 	"github.com/infinytum/injector"
 	"gorm.io/gorm"
 )
 
 type cachedDb struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.Cache
 }
 
 func (c *cachedDb) getDB() *gorm.DB {
@@ -18,4 +21,11 @@ func (c *cachedDb) getDB() *gorm.DB {
 		c.db = db
 	}
 	return c.db
+}
+
+func (c *cachedDb) getCache() cache.Cache {
+	if c.cache == nil {
+		c.cache = mojito.DefaultCache()
+	}
+	return c.cache
 }

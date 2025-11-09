@@ -5,10 +5,9 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/infinytum/injector"
+	"github.com/nilathedragon/spamscale/db"
 	"github.com/nilathedragon/spamscale/db/model"
 	"github.com/nilathedragon/spamscale/util"
-	"gorm.io/gorm"
 )
 
 const (
@@ -63,25 +62,12 @@ func CommandSetCaptchaTypeHandlerCallback(b *gotgbot.Bot, ctx *ext.Context) erro
 		return nil
 	}
 
-	db, err := injector.Inject[*gorm.DB]()
-	if err != nil {
+	if err := db.Chat.SetCaptchaType(ctx.EffectiveChat.Id, model.CaptchaType(captchaType)); err != nil {
 		return err
 	}
 
-	var chat model.Chat
-	if err := db.Where(&model.Chat{ID: ctx.EffectiveChat.Id}).First(&chat).Error; err != nil {
+	if _, err := b.SendMessage(ctx.EffectiveChat.Id, "Captcha type updated successfully", &gotgbot.SendMessageOpts{}); err != nil {
 		return err
 	}
-
-	chat.CaptchaType = model.CaptchaType(captchaType)
-	if err := db.Save(&chat).Error; err != nil {
-		return err
-	}
-
-	_, err = b.SendMessage(ctx.EffectiveChat.Id, "Captcha type updated successfully", &gotgbot.SendMessageOpts{})
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
