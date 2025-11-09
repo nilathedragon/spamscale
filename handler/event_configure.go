@@ -4,6 +4,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/nilathedragon/spamscale/db"
+	"github.com/nilathedragon/spamscale/util"
 )
 
 const (
@@ -35,11 +36,7 @@ func SetupHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 			adminUser := admin.MergeChatMember()
 			if adminUser.User.Id == ctx.MyChatMember.NewChatMember.GetUser().Id {
 				if adminUser.CanDeleteMessages && adminUser.CanRestrictMembers && adminUser.CanInviteUsers {
-					_, err = b.SendMessage(ctx.MyChatMember.Chat.Id, permissionOkMessage, &gotgbot.SendMessageOpts{})
-					if err != nil {
-						return err
-					}
-					return nil
+					return util.TempMessage(b, ctx.MyChatMember.Chat.Id, permissionOkMessage)
 				}
 				break
 			}
