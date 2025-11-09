@@ -52,6 +52,8 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCommand("report", handler.CommandReportHandler))
 		dispatcher.AddHandler(handlers.NewCommand("setcaptchatype", handler.CommandSetCaptchaTypeHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
+		dispatcher.AddHandler(handlers.NewCommand("setfastblocklistenabled", handler.CommandSetFastBlocklistEnabledHandler))
+		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetFastBlocklistEnabledCallback), handler.CommandSetFastBlocklistEnabledHandlerCallback))
 
 		userCommandScope := []gotgbot.BotCommand{
 			{
@@ -77,6 +79,10 @@ var serveCmd = &cobra.Command{
 			{
 				Command:     "setcaptchatype",
 				Description: "Set the type of captcha to use",
+			},
+			{
+				Command:     "setfastblocklistenabled",
+				Description: "Set whether to use the fast blocklist",
 			},
 			{
 				Command:     "tmute",
