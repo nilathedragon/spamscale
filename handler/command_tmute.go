@@ -13,13 +13,7 @@ import (
 func CommandTMuteHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	log.Info("TMute command received", "chat_id", ctx.EffectiveChat.Id, "user_id", ctx.EffectiveUser.Id)
 	if !util.IsModerator(b, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id) {
-		helperMessage, err := ctx.Message.Reply(b, "You are not authorized to use this command", &gotgbot.SendMessageOpts{})
-		if err != nil {
-			return err
-		}
-
-		queueMessageDeletion(b, []*gotgbot.Message{ctx.Message, helperMessage})
-		return nil
+		return util.TempMessage(b, ctx.EffectiveChat.Id, "You are not authorized to use this command")
 	}
 
 	if matches, err := validateCommand(b, ctx.Message.Text, `/(\S*) (@[a-zA-Z0-9_-]*) (\d*(?:min|h|d|m|y))`, "/tmute @user duration", ctx); err != nil {
@@ -37,12 +31,6 @@ func CommandTMuteHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	if err := restrictions.TemporaryMute(b, userToMute.Id, command[2], ctx); err != nil {
 		return err
 	}
-	helperMessage, err := ctx.Message.Reply(b, "User muted for "+command[2], &gotgbot.SendMessageOpts{})
-	if err != nil {
-		return err
-	}
 
-	queueMessageDeletion(b, []*gotgbot.Message{ctx.Message, helperMessage})
-
-	return nil
+	return util.TempMessage(b, ctx.EffectiveChat.Id, "User muted for "+command[2])
 }

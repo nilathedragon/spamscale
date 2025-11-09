@@ -13,13 +13,7 @@ import (
 func CommandBanHandler(b *gotgbot.Bot, ctx *ext.Context) (err error) {
 	log.Info("Ban command received", "chat_id", ctx.EffectiveChat.Id, "user_id", ctx.EffectiveUser.Id)
 	if !util.IsModerator(b, ctx.EffectiveChat.Id, ctx.EffectiveUser.Id) {
-		helperMessage, err := ctx.Message.Reply(b, "You are not authorized to use this command", &gotgbot.SendMessageOpts{})
-		if err != nil {
-			return err
-		}
-
-		queueMessageDeletion(b, []*gotgbot.Message{ctx.Message, helperMessage})
-		return nil
+		return util.TempMessage(b, ctx.EffectiveChat.Id, "You are not authorized to use this command")
 	}
 
 	if valid, err := validateCommand(b, ctx.Message.Text, `/(\S*) (@[a-zA-Z0-9_-]*)`, "/ban @user", ctx); err != nil {
@@ -36,12 +30,6 @@ func CommandBanHandler(b *gotgbot.Bot, ctx *ext.Context) (err error) {
 	if err := restrictions.Ban(b, userToBan.Id, ctx); err != nil {
 		return err
 	}
-	helperMessage, err := ctx.Message.Reply(b, fmt.Sprintf("Banned %s.", userToBan.Username), &gotgbot.SendMessageOpts{})
-	if err != nil {
-		return err
-	}
 
-	queueMessageDeletion(b, []*gotgbot.Message{ctx.Message, helperMessage})
-
-	return nil
+	return util.TempMessage(b, ctx.EffectiveChat.Id, fmt.Sprintf("Banned %s.", userToBan.Username))
 }
