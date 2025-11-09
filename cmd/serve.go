@@ -45,6 +45,7 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewChatJoinRequest(handler.JoinRequestHandlerFilter, handler.JoinRequestHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
+		dispatcher.AddHandler(handlers.NewCommand("ban", handler.CommandBanHandler))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
 		dispatcher.AddHandler(handlers.NewCommand("tmute", handler.CommandTMuteHandler))
 		dispatcher.AddHandler(handlers.NewCommand("report", handler.CommandReportHandler))
@@ -68,6 +69,10 @@ var serveCmd = &cobra.Command{
 		}
 
 		adminCommandScope := []gotgbot.BotCommand{
+			{
+				Command:     "ban",
+				Description: "Ban a user",
+			},
 			{
 				Command:     "setcaptchatype",
 				Description: "Set the type of captcha to use",
