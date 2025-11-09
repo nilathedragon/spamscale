@@ -46,6 +46,7 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
+		dispatcher.AddHandler(handlers.NewCommand("tmute", handler.CommandTMuteHandler))
 		dispatcher.AddHandler(handlers.NewCommand("report", handler.CommandReportHandler))
 		dispatcher.AddHandler(handlers.NewCommand("setcaptchatype", handler.CommandSetCaptchaTypeHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
@@ -65,6 +66,10 @@ var serveCmd = &cobra.Command{
 			{
 				Command:     "setcaptchatype",
 				Description: "Set the type of captcha to use",
+			},
+			{
+				Command: 	 "tmute",
+				Description: "Temporarily mute a user",
 			},
 		}
 

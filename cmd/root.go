@@ -42,7 +42,7 @@ to quickly create a Cobra application.`,
 				panic(err)
 			}
 
-			if err := db.AutoMigrate(&model.CaptchaState{}, &model.Chat{}); err != nil {
+			if err := db.AutoMigrate(&model.CaptchaState{}, &model.Chat{}, &model.ChatRestriction{}); err != nil {
 				panic(err)
 			}
 			return db
