@@ -4,6 +4,7 @@ import (
 	"image"
 	"math/rand/v2"
 	"slices"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -30,7 +31,7 @@ func GenerateCaptchaImage() (chosenEmojis []string, img *image.RGBA, err error) 
 
 		alreadyPicked = append(alreadyPicked, randomIndex)
 
-		emoji := emojis[randomIndex]
+		emoji := strings.Join(emojiToUTF8(emojis[randomIndex]), "_")
 
 		err := addImage(img, image.Point{X: xOffset, Y: 200}, viper.GetString("resources-dir")+"/emojis/"+emoji+".png")
 		if err != nil {
