@@ -1,17 +1,16 @@
 package emojis
 
 import (
-	"os"
 	"strconv"
 	"strings"
 
-	"github.com/spf13/viper"
+	"github.com/nilathedragon/spamscale/resources"
 )
 
 func loadEmojis() (emojis []string, err error) {
 	emojis = make([]string, 0)
 
-	files, err := os.ReadDir(viper.GetString("resources-dir") + "/emojis")
+	files, err := resources.ReadDir("emojis")
 	if err != nil {
 		return nil, err
 	}

@@ -32,7 +32,6 @@ to quickly create a Cobra application.`,
 		viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 
 		viper.SetDefault("cache.duration", 10) // 10 minutes
-		viper.SetDefault("resources-dir", "./res")
 
 		viper.SafeWriteConfig()
 		if err := viper.ReadInConfig(); err != nil {

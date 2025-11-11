@@ -1,12 +1,13 @@
 package emojis
 
 import (
+	"bytes"
 	"image"
 	"image/color"
 	"image/draw"
-	"os"
 
 	"github.com/Ostsol/gradient"
+	"github.com/nilathedragon/spamscale/resources"
 )
 
 func createBaseImage() (img *image.RGBA) {
@@ -33,21 +34,15 @@ func createBaseImage() (img *image.RGBA) {
 }
 
 func addImage(baseImage draw.Image, point image.Point, path string) (err error) {
-	emojiImageFile, err := os.OpenFile(path, os.O_RDONLY, 0o006)
+	emojiImageData, err := resources.Read(path)
 	if err != nil {
 		return
 	}
-	defer func(emojiImageFile *os.File) {
-		_ = emojiImageFile.Close()
-	}(emojiImageFile)
 
-	emojiImage, _, err := image.Decode(emojiImageFile)
+	emojiImage, _, err := image.Decode(bytes.NewReader(emojiImageData))
 	if err != nil {
 		return
 	}
-	defer func(emojiImageFile *os.File) {
-		_ = emojiImageFile.Close()
-	}(emojiImageFile)
 
 	draw.Draw(baseImage, image.Rect(point.X, point.Y, point.X+200, point.Y+200), emojiImage, image.Point{X: 0, Y: 0}, draw.Over)
 	return

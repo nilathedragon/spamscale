@@ -1,27 +1,24 @@
 package handler
 
 import (
-	"os"
+	"bytes"
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/spf13/viper"
+	"github.com/nilathedragon/spamscale/resources"
 )
 
 func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
-	f, err := os.Open(viper.GetString("resources-dir") + "/cute.png")
+	stickerData, err := resources.Read("cute.png")
 	if err != nil {
 		return err
 	}
-	defer func(f *os.File) {
-		_ = f.Close()
-	}(f)
 
 	_, err = b.SendSticker(
 		ctx.Message.Chat.Id,
 		&gotgbot.FileReader{
 			Name: "cute.png",
-			Data: f,
+			Data: bytes.NewReader(stickerData),
 		},
 		&gotgbot.SendStickerOpts{
 			Emoji: "🩵",
