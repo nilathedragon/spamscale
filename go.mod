@@ -3,6 +3,7 @@ module github.com/nilathedragon/spamscale
 go 1.25.2
 
 require (
+	github.com/Ostsol/gradient v0.0.0-20130528175357-ba63a5050e92
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.33
 	github.com/go-mojito/mojito v0.0.19
 	github.com/infinytum/injector v0.0.3
@@ -13,7 +14,6 @@ require (
 )
 
 require (
-	github.com/Ostsol/gradient v0.0.0-20130528175357-ba63a5050e92 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
