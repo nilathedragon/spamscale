@@ -10,7 +10,7 @@ import (
 func loadEmojis() (emojis []string, err error) {
 	emojis = make([]string, 0)
 
-	files, err := os.ReadDir(viper.GetString("emoji-dir") + "/res/emojis")
+	files, err := os.ReadDir(viper.GetString("resources-dir") + "/emojis")
 	if err != nil {
 		return nil, err
 	}

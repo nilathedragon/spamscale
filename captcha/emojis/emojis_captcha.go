@@ -32,7 +32,7 @@ func GenerateCaptchaImage() (chosenEmojis []string, img *image.RGBA, err error) 
 
 		emoji := emojis[randomIndex]
 
-		err := addImage(img, image.Point{X: xOffset, Y: 200}, viper.GetString("emoji-dir")+"/res/emojis/"+emoji+".png")
+		err := addImage(img, image.Point{X: xOffset, Y: 200}, viper.GetString("resources-dir")+"/emojis/"+emoji+".png")
 		if err != nil {
 			return nil, nil, err
 		}
