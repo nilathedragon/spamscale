@@ -16,6 +16,6 @@ WORKDIR /mnt
 COPY --from=builder /app/spamscale /spamscale
 COPY --from=builder /app/res /res
 
-ENV EMOJI_DIR=/
+ENV SPAMSCALE_EMOJI_DIR=/
 
 ENTRYPOINT ["/spamscale"]
