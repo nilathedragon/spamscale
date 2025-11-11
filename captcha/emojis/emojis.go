@@ -3,12 +3,14 @@ package emojis
 import (
 	"os"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func loadEmojis() (emojis []string, err error) {
 	emojis = make([]string, 0)
 
-	files, err := os.ReadDir("./res/emojis")
+	files, err := os.ReadDir(viper.GetString("emoji-dir") + "/res/emojis")
 	if err != nil {
 		return nil, err
 	}

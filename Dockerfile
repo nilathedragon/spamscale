@@ -14,5 +14,8 @@ FROM gcr.io/distroless/static-debian12
 WORKDIR /mnt
 
 COPY --from=builder /app/spamscale /spamscale
+COPY --from=builder /app/res /res
+
+ENV EMOJI_DIR=/
 
 ENTRYPOINT ["/spamscale"]
