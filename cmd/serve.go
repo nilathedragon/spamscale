@@ -61,6 +61,10 @@ var serveCmd = &cobra.Command{
 				Command:     "report",
 				Description: "Notify the moderators",
 			},
+			{
+				Command:     "pet",
+				Description: "Pet the derg",
+			},
 		}
 
 		if _, err := bot.SetMyCommands(
