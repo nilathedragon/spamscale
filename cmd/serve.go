@@ -49,6 +49,7 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCommand("ban", handler.CommandBanHandler))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
 		dispatcher.AddHandler(handlers.NewCommand("tmute", handler.CommandTMuteHandler))
+		dispatcher.AddHandler(handlers.NewCommand("pet", handler.CommandPetHandler))
 		dispatcher.AddHandler(handlers.NewCommand("report", handler.CommandReportHandler))
 		dispatcher.AddHandler(handlers.NewCommand("setcaptchatype", handler.CommandSetCaptchaTypeHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
