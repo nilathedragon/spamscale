@@ -7,7 +7,6 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/go-mojito/mojito"
 	"github.com/go-mojito/mojito/log"
 	"github.com/nilathedragon/spamscale/util"
 )
@@ -20,13 +19,11 @@ func CommandReportHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	}
 
 	// Debounce logic, to prevent spamming the mods (unintentionally or intentionally)
-	if exists, err := mojito.DefaultCache().Contains(commandReportCacheKey(ctx.EffectiveChat.Id)); err != nil {
+	if ok, err := util.RateLimitSingle(commandReportCacheKey(ctx.EffectiveChat.Id), 10*time.Second); err != nil {
 		return err
-	} else if exists {
+	} else if !ok {
 		return nil
 	}
-	mojito.DefaultCache().Set(commandReportCacheKey(ctx.EffectiveChat.Id), true)
-	mojito.DefaultCache().ExpireAfter(commandReportCacheKey(ctx.EffectiveChat.Id), 10*time.Second)
 
 	moderators, err := util.GetModerators(b, ctx.EffectiveChat.Id)
 	if err != nil {
