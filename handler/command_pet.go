@@ -2,13 +2,28 @@ package handler
 
 import (
 	"bytes"
+	"fmt"
+	"time"
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/nilathedragon/spamscale/resources"
+	"github.com/nilathedragon/spamscale/util"
 )
 
 func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
+	if ok, err := util.RateLimit(commandPetChatCacheKey(ctx.Message.Chat.Id), 3, 10*time.Second); err != nil {
+		return err
+	} else if !ok {
+		return nil
+	}
+
+	if ok, err := util.RateLimitSingle(commandPetUserCacheKey(ctx.Message.Chat.Id, ctx.EffectiveUser.Id), 10*time.Second); err != nil {
+		return err
+	} else if !ok {
+		return nil
+	}
+
 	stickerData, err := resources.Read("cute.png")
 	if err != nil {
 		return err
@@ -38,4 +53,12 @@ func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	})
 
 	return err
+}
+
+func commandPetChatCacheKey(chatId int64) string {
+	return fmt.Sprintf("command_pet:%d", chatId)
+}
+
+func commandPetUserCacheKey(chatId int64, userId int64) string {
+	return fmt.Sprintf("command_pet:%d:%d", chatId, userId)
 }
