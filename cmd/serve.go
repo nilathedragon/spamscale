@@ -47,6 +47,7 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.ButtonCaptchaConfirmCallback), captcha.ButtonCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCommand("ban", handler.CommandBanHandler))
+		dispatcher.AddHandler(handlers.NewCommand("boop", handler.CommandBoopHandler))
 		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
 		dispatcher.AddHandler(handlers.NewCommand("tmute", handler.CommandTMuteHandler))
 		dispatcher.AddHandler(handlers.NewCommand("pet", handler.CommandPetHandler))
@@ -64,6 +65,10 @@ var serveCmd = &cobra.Command{
 			{
 				Command:     "pet",
 				Description: "Pet the derg",
+			},
+			{
+				Command:     "boop",
+				Description: "Boop the derg",
 			},
 		}
 
