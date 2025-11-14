@@ -16,3 +16,4 @@ WORKDIR /mnt
 COPY --from=builder /app/spamscale /spamscale
 
 ENTRYPOINT ["/spamscale"]
+CMD ["serve"]
