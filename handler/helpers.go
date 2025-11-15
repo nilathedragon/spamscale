@@ -7,7 +7,7 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
-	"github.com/nilathedragon/spamscale/helpers"
+	"github.com/nilathedragon/spamscale/pkg/thirdparty/tguserid"
 )
 
 func validateCommand(b *gotgbot.Bot, cmd string, regex string, expectedFormat string, ctx *ext.Context) (bool, error) {
@@ -67,12 +67,12 @@ func getTargetUserFromEntities(b *gotgbot.Bot, entities []gotgbot.MessageEntity,
 func resolveUserFromMention(mention *gotgbot.MessageEntity, b *gotgbot.Bot, ctx *ext.Context) (*gotgbot.User, error) {
 	username := ctx.Message.Text[mention.Offset+1 : mention.Offset+mention.Length]
 
-	userID, err := helpers.GetUserIDFromUsername(username)
+	user, err := tguserid.GetUser(username)
 	if err != nil {
 		return nil, err
 	}
 
-	member, err := ctx.Message.Chat.GetMember(b, userID, &gotgbot.GetChatMemberOpts{})
+	member, err := ctx.Message.Chat.GetMember(b, user.ID, &gotgbot.GetChatMemberOpts{})
 	if err != nil {
 		return nil, err
 	}
