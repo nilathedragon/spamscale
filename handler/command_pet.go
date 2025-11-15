@@ -7,18 +7,19 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
+	"github.com/go-mojito/mojito/log"
 	"github.com/nilathedragon/spamscale/resources"
 	"github.com/nilathedragon/spamscale/util"
 )
 
 func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
-	if ok, err := util.RateLimit(commandPetChatCacheKey(ctx.Message.Chat.Id), 3, 10*time.Second); err != nil {
-		return err
-	} else if !ok {
+	petEntry, ok := petCommandAllowedMap[ctx.Message.Chat.Id]
+	if !ok {
+		log.Debug("Pet command received, but no pet command was allowed yet.")
 		return nil
 	}
 
-	if ok, err := util.RateLimitSingle(commandPetUserCacheKey(ctx.Message.Chat.Id, ctx.EffectiveUser.Id), 10*time.Second); err != nil {
+	if ok, err := util.RateLimitSingle(commandPetUserCacheKey(ctx.Message.Chat.Id, ctx.EffectiveUser.Id), 1*time.Second); err != nil {
 		return err
 	} else if !ok {
 		return nil
@@ -29,7 +30,7 @@ func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	_, err = b.SendSticker(
+	msg, err := b.SendSticker(
 		ctx.Message.Chat.Id,
 		&gotgbot.FileReader{
 			Name: "cute.png",
@@ -41,6 +42,7 @@ func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	if err != nil {
 		return err
 	}
+	petEntry.MessagesToDelete = append(petEntry.MessagesToDelete, ctx.Message.MessageId, msg.MessageId)
 
 	_, err = ctx.Message.SetReaction(b, &gotgbot.SetMessageReactionOpts{
 		Reaction: []gotgbot.ReactionType{
@@ -53,10 +55,6 @@ func CommandPetHandler(b *gotgbot.Bot, ctx *ext.Context) error {
 	})
 
 	return err
-}
-
-func commandPetChatCacheKey(chatId int64) string {
-	return fmt.Sprintf("command_pet:%d", chatId)
 }
 
 func commandPetUserCacheKey(chatId int64, userId int64) string {
