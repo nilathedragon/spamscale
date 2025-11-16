@@ -78,7 +78,6 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(captcha.EmojiCaptchaConfirmCallback), captcha.EmojiCaptchaCallback))
 		dispatcher.AddHandler(handlers.NewCommand("ban", handler.CommandBanHandler))
 		dispatcher.AddHandler(handlers.NewCommand("boop", handler.CommandBoopHandler))
-		dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
 		dispatcher.AddHandler(handlers.NewCommand("tmute", handler.CommandTMuteHandler))
 		dispatcher.AddHandler(handlers.NewCommand("pet", handler.CommandPetHandler))
 		dispatcher.AddHandler(handlers.NewCommand("report", handler.CommandReportHandler))
@@ -86,6 +85,15 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetCaptchaTypeCallback), handler.CommandSetCaptchaTypeHandlerCallback))
 		dispatcher.AddHandler(handlers.NewCommand("setfastblocklistenabled", handler.CommandSetFastBlocklistEnabledHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetFastBlocklistEnabledCallback), handler.CommandSetFastBlocklistEnabledHandlerCallback))
+
+		// Test commands
+		if viper.GetString("environment") == "local" {
+			dispatcher.AddHandler(handlers.NewCommand("captcha", handler.CommandCaptchaHandler))
+			dispatcher.AddHandler(handlers.NewCommand("userblocked", func(b *gotgbot.Bot, ctx *ext.Context) error {
+				ctx.Message.Delete(b, &gotgbot.DeleteMessageOpts{})
+				return handler.BlockUser(b, ctx.Message.Chat.Id, ctx.Message.From.Id)
+			}))
+		}
 
 		if _, err := bot.SetMyCommands(
 			userCommandScope,
