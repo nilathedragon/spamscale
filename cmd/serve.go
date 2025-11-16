@@ -16,6 +16,36 @@ import (
 	"github.com/spf13/viper"
 )
 
+var userCommandScope = []gotgbot.BotCommand{
+	{
+		Command:     "report",
+		Description: "Notify the moderators",
+	},
+	{
+		Command:     "boop",
+		Description: "Boop the derg",
+	},
+}
+
+var adminCommandScope = append([]gotgbot.BotCommand{
+	{
+		Command:     "ban",
+		Description: "Ban a user",
+	},
+	{
+		Command:     "setcaptchatype",
+		Description: "Set the type of captcha to use",
+	},
+	{
+		Command:     "setfastblocklistenabled",
+		Description: "Set whether to use the fast blocklist",
+	},
+	{
+		Command:     "tmute",
+		Description: "Temporarily mute a user. Usage: /tmute <@username> <duration>",
+	},
+}, userCommandScope...)
+
 var serveCmd = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the SpamScale telegram bot",
@@ -57,21 +87,6 @@ var serveCmd = &cobra.Command{
 		dispatcher.AddHandler(handlers.NewCommand("setfastblocklistenabled", handler.CommandSetFastBlocklistEnabledHandler))
 		dispatcher.AddHandler(handlers.NewCallback(callbackquery.Prefix(handler.CommandSetFastBlocklistEnabledCallback), handler.CommandSetFastBlocklistEnabledHandlerCallback))
 
-		userCommandScope := []gotgbot.BotCommand{
-			{
-				Command:     "report",
-				Description: "Notify the moderators",
-			},
-			{
-				Command:     "pet",
-				Description: "Pet the derg",
-			},
-			{
-				Command:     "boop",
-				Description: "Boop the derg",
-			},
-		}
-
 		if _, err := bot.SetMyCommands(
 			userCommandScope,
 			&gotgbot.SetMyCommandsOpts{
@@ -81,27 +96,8 @@ var serveCmd = &cobra.Command{
 			return err
 		}
 
-		adminCommandScope := []gotgbot.BotCommand{
-			{
-				Command:     "ban",
-				Description: "Ban a user",
-			},
-			{
-				Command:     "setcaptchatype",
-				Description: "Set the type of captcha to use",
-			},
-			{
-				Command:     "setfastblocklistenabled",
-				Description: "Set whether to use the fast blocklist",
-			},
-			{
-				Command:     "tmute",
-				Description: "Temporarily mute a user. Usage: /tmute <@username> <duration>",
-			},
-		}
-
 		if _, err := bot.SetMyCommands(
-			append(userCommandScope, adminCommandScope...),
+			adminCommandScope,
 			&gotgbot.SetMyCommandsOpts{
 				Scope: gotgbot.BotCommandScopeAllChatAdministrators{},
 			},
